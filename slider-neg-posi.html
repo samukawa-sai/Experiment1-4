@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>First Experiment1-1</title>
+    <!-- プラグインの参照 -->
+    <!-- １．基本のプラグイン -->
+    <script src="https://unpkg.com/jspsych@8.2.2"></script>
+    <!-- 2．文字刺激＋キーボード応答 -->
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.1.0"></script>
+    <!-- 3．文字刺激＋スライダー -->
+    <script src="https://unpkg.com/@jspsych/plugin-html-slider-response@2.1.0"></script>
+    <!-- 4．画像刺激＋スライダー -->
+    <script src="https://unpkg.com/@jspsych/plugin-image-slider-response@2.1.0"></script>
+    <!-- 5．先に読み込み -->
+    <script src="https://unpkg.com/@jspsych/plugin-preload@2.1.0"></script>
+    <!-- 6．画像刺激＋キーボード応答 -->
+    <script src="https://unpkg.com/@jspsych/plugin-image-keyboard-response@2.1.0"></script>
+    <!-- CSSの参照 -->
+    <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <!--utf-8の指定-->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+
+  <body></body>
+
+  <script>
+    // jsPsychの初期化
+    const jsPsych = initJsPsych();  
+    // 空のタイムライン配列
+    const timeline = [];
+    
+    // --- 説明文 ---
+    const intro = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `
+        <h2>孤独感の評定</h2>
+        <p>以下の質問に対して、あなたが感じている程度をスライダーでお答えください。</p>
+        <p>スライダーを動かした後、「次へ」を押してください。</p>
+        <p><br>スペースキーを押すと開始します。</p>
+      `,
+      choices: [' '], // スペースキーで進む
+    };
+    timeline.push(intro);
+    
+    // --- 孤独感の質問 ---
+    const loneliness_items = [
+      "自分には人との付き合いがないと感じることがありますか？",
+      "自分は取り残されていると感じることがありますか？",
+      "自分は他の人たちから孤立していると感じることはありますか？"
+    ];
+
+
+    // --- スライダー試行（共通設定） ---
+    const loneliness_trials = loneliness_items.map((q, i) => {
+      return {
+        type: jsPsychHtmlSliderResponse,
+        stimulus: `<p style="font-size:22px;">${q}</p>`,
+        labels: ['まったく感じない', 'とても感じる'],
+        min: 0,
+        max: 100,
+        start: 50,
+        step: 1,
+        slider_width: 500,
+        require_movement: true,
+        button_label: '次へ',
+        data: { question_number: i + 1, question_text: q }
+      };
+    });
+    timeline.push(...loneliness_trials);
+
+    const explanation2 = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `
+        <h2>優越の錯覚の評定</h2>
+        <p>以下の質問に対して、あなたが感じている程度を平均と比較してスライダーでお答えください。</p>
+        <p>スライダーを動かした後、「次へ」を押してください。</p>
+        <p><br>スペースキーを押すと開始します。</p>
+      `,
+      choices: [' '], // スペースキーで進む
+    };
+    timeline.push(explanation2);
+
+        // --- 孤独感の質問 ---
+    const superiority_items = [
+      "人望がない",
+      "寛大",
+      "親切",
+      "視野が広い",
+      "無責任",
+      "知的",
+      "単純",
+      "陰気",
+      "社交的",
+      "果敢",
+      "勤勉",
+      "正直",
+      "人に好かれる",
+      "衝動的",
+      "知性がない",
+      "不器用",
+      "芸術的",
+      "不正直",
+      "従順",
+      "大胆",
+      "頼りになる",
+      "詮索好き",
+      "浅薄" , 
+      "実務家",
+      "頼りない",
+      "誠実",
+      "うぬぼれ屋",
+      "間抜け",
+      "想像力に富む",
+      "慎重",
+      "悲観的",
+      "感傷的",
+      "控え目",
+      "内気",
+      "器用",
+      "支配的",
+      "陽気",
+      "短気",
+      "気難しい",
+      "冷静",
+      "影響力がある",
+      "ユーモアがある",
+      "気さく",
+      "存在感が薄い",
+      "厳格",
+      "思案にふけやすい",
+      "優柔不断",
+      "冴えない",
+      "浪費家",
+      "謙虚",
+      "理科系",
+      "思いやりがある",
+      "想像力に欠ける",
+      "凝り性",
+      "真面目",
+      "気まぐれ",
+      "粘り強い",
+      "ユーモアがない",
+      "軽薄",
+      "要領がいい"
+    ];
+
+    // --- スライダー試行（共通設定） ---
+    const superiority_trials = superiority_items.map((q, i) => {
+      return {
+        type: jsPsychHtmlSliderResponse,
+        stimulus: `<p style="font-size:22px;">${q}</p>`,
+        labels: ['下', '平均' , '上'],
+        min: 0,
+        max: 100,
+        start: 50,
+        step: 1,
+        slider_width: 500,
+        require_movement: true,
+        button_label: '次へ',
+        data: { question_number: i + 1, question_text: q }
+      };
+    });
+    timeline.push(...superiority_trials);
+
+
+    //実験の実行
+    jsPsych.run(timeline);
+  </script>
+</html>
