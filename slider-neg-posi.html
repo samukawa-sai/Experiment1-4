@@ -50,6 +50,8 @@
       "自分は他の人たちから孤立していると感じることはありますか？"
     ];
 
+    var random_loneliness_items = jsPsych.randomization.shuffle(loneliness_items);
+    loneliness_items = random_loneliness_items;
 
     // --- スライダー試行（共通設定） ---
     const loneliness_trials = loneliness_items.map((q, i) => {
@@ -82,68 +84,14 @@
     timeline.push(explanation2);
 
         // --- 孤独感の質問 ---
-    const superiority_items = [
+    var superiority_items = [
       "人望がない",
       "寛大",
       "親切",
-      "視野が広い",
-      "無責任",
-      "知的",
-      "単純",
-      "陰気",
-      "社交的",
-      "果敢",
-      "勤勉",
-      "正直",
-      "人に好かれる",
-      "衝動的",
-      "知性がない",
-      "不器用",
-      "芸術的",
-      "不正直",
-      "従順",
-      "大胆",
-      "頼りになる",
-      "詮索好き",
-      "浅薄" , 
-      "実務家",
-      "頼りない",
-      "誠実",
-      "うぬぼれ屋",
-      "間抜け",
-      "想像力に富む",
-      "慎重",
-      "悲観的",
-      "感傷的",
-      "控え目",
-      "内気",
-      "器用",
-      "支配的",
-      "陽気",
-      "短気",
-      "気難しい",
-      "冷静",
-      "影響力がある",
-      "ユーモアがある",
-      "気さく",
-      "存在感が薄い",
-      "厳格",
-      "思案にふけやすい",
-      "優柔不断",
-      "冴えない",
-      "浪費家",
-      "謙虚",
-      "理科系",
-      "思いやりがある",
-      "想像力に欠ける",
-      "凝り性",
-      "真面目",
-      "気まぐれ",
-      "粘り強い",
-      "ユーモアがない",
-      "軽薄",
-      "要領がいい"
     ];
+
+    var random_superiority_items = jsPsych.randomization.shuffle(superiority_items);
+    superiority_items = random_superiority_items;
 
     // --- スライダー試行（共通設定） ---
     const superiority_trials = superiority_items.map((q, i) => {
