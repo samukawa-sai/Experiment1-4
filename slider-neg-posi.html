@@ -34,7 +34,7 @@
     const intro = {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: `
-        <h2>孤独感の評定</h2>
+        <h2>評定実験１</h2>
         <p>以下の質問に対して、あなたが感じている程度をスライダーでお答えください。</p>
         <p>スライダーを動かした後、「次へ」を押してください。</p>
         <p><br>スペースキーを押すと開始します。</p>
@@ -54,10 +54,10 @@
     loneliness_items = random_loneliness_items;
 
     // --- スライダー試行（共通設定） ---
-    const loneliness_trials = loneliness_items.map((q, i) => {
+    const loneliness_trials = loneliness_items.map((elements, i) => {
       return {
         type: jsPsychHtmlSliderResponse,
-        stimulus: `<p style="font-size:22px;">${q}</p>`,
+        stimulus: `<p style="font-size:22px;">${elements}</p>`,
         labels: ['まったく感じない', 'とても感じる'],
         min: 0,
         max: 100,
@@ -66,7 +66,7 @@
         slider_width: 500,
         require_movement: true,
         button_label: '次へ',
-        data: { question_number: i + 1, question_text: q }
+        data: { question_number: i + 1, question_text: elements }
       };
     });
     timeline.push(...loneliness_trials);
@@ -75,7 +75,7 @@
     const explanation2 = {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: `
-        <h2>優越の錯覚の評定</h2>
+        <h2>評定実験２</h2>
         <p>以下の質問に対して、あなたが感じている程度を平均と比較してスライダーでお答えください。</p>
         <p>スライダーを動かした後、「次へ」を押してください。</p>
         <p><br>スペースキーを押すと開始します。</p>
@@ -86,6 +86,29 @@
 
     // --- 優越の錯覚の質問 ---
     const positive_items = [
+    "寛大",         // tolerant
+    "親切",         // helpful
+    "視野が広い",   // discriminating / broad-minded
+    "知的",         // intelligent
+    "社交的",       // sociable
+    "果敢",         // determined
+    "勤勉",         // industrious
+    "正直",         // honest
+    "人に好かれる", // popular
+    "従順",         // submissive
+    "大胆",         // bold
+    "頼りになる",   // reliable
+    "実務家",       // practical
+    "誠実",         // sincere
+    "想像力に富む", // imaginative
+    "慎重",         // cautious
+    "控え目",       // modest
+    "器用",         // skillful
+    "陽気",         // happy
+    "冷静",         // calm/cool
+    "ユーモアがある", // humorous
+    "謙虚",         // modest
+    "思いやりがある", // good-natured / warm
     "真面目",       // serious
     "粘り強い",     // persistent
     "厳格",         // serious / disciplined
@@ -93,6 +116,30 @@
 
 
     const negative_items = [
+    "人望がない",   // unpopular
+    "無責任",       // irresponsible
+    "単純",         // simple-minded
+    "陰気",         // gloomy
+    "衝動的",       // impulsive
+    "知性がない",   // unintelligent
+    "不器用",       // clumsy
+    "不正直",       // dishonest
+    "浅薄",         // superficial
+    "頼りない",     // unreliable
+    "うぬぼれ屋",   // vain
+    "間抜け",       // foolish
+    "悲観的",       // pessimistic
+    "感傷的",       // sentimental
+    "内気",         // unsociable / shy
+    "支配的",       // dominating
+    "短気",         // irritable
+    "気難しい",     // moody / squeamish
+    "存在感が薄い", // insignificant
+    "優柔不断",     // wavering
+    "冴えない",     // boring / dull
+    "浪費家",       // wasteful
+    "想像力に欠ける", // unimaginative
+    "気まぐれ",     // moody
     "ユーモアがない", // humorless
     "軽薄",         // frivolous
     ];
@@ -133,7 +180,7 @@
     stimulus: `
         <h2>実験は以上です。</h2>
         <p>ご協力ありがとうございました。</p>
-        <p>この画面が表示されたら、実験者の指示に従ってください。</p>
+        <p>この画面が表示されたら、終了していただいて結構です。</p>
         <p><br>スペースキーを押すと終了します。</p>
     `,
     choices: [' '], // スペースキーで終了
