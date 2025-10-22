@@ -30,10 +30,8 @@
     function downloadCSV(filename) {
       const csv = jsPsych.data.get().csv(); // 収集データをCSV化
 
-      // ★↓ここから2行を追加（または変更）
       const bom = new Uint8Array([0xEF, 0xBB, 0xBF]); // UTF-8のBOM
       const blob = new Blob([bom, csv], { type: 'text/csv;charset=utf-8;' }); // BOMを先頭に追加
-      // ★↑ここまで
 
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
