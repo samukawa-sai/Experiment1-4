@@ -25,57 +25,23 @@
 
   <script>
     // ==========================================
-    // ユーティリティ（★CSV保存関数）
-    // ==========================================
-    function downloadCSV(filename) {
-      const csv = jsPsych.data.get().csv(); // 収集データをCSV化
-
-      // ★↓ここから2行を追加（または変更）
-      const bom = new Uint8Array([0xEF, 0xBB, 0xBF]); // UTF-8のBOM
-      const blob = new Blob([bom, csv], { type: 'text/csv;charset=utf-8;' }); // BOMを先頭に追加
-      // ★↑ここまで
-
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    function timestamp() {
-      const d = new Date();
-      const pad = (n) => String(n).padStart(2, '0');
-      return (
-        d.getFullYear() +
-        pad(d.getMonth() + 1) +
-        pad(d.getDate()) + "_" +
-        pad(d.getHours()) +
-        pad(d.getMinutes()) +
-        pad(d.getSeconds())
-      );
-    }
-
-    // ==========================================
     // jsPsych 初期化
     // ==========================================
     const jsPsych = initJsPsych();
     const timeline = [];
+  
 
     // --- 説明文 ---
     const intro = {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: `
-        <h2>評定実験１</h2>
+        <h2>評定実験</h2>
         <p>以下の質問に対して、あなたが感じている程度をスライダーでお答えください。</p>
         <p>スライダーを動かした後、「次へ」を押してください。</p>
         <p><br>スペースキーを押すと開始します。</p>
       `,
       choices: [' '],
     };
-    timeline.push(intro);
 
     // --- 孤独感の質問 ---
     let loneliness_items = [
@@ -100,7 +66,13 @@
         data: { block: 'loneliness', question_number: i + 1, question_text: elements }
       };
     });
-    timeline.push(...loneliness_trials);
+
+    const loneliness_experiment = {
+      timeline:[
+        intro,
+        ...loneliness_trials,
+      ]
+    }
 
     // --- 説明文２ ---
     const explanation2 = {
@@ -113,29 +85,70 @@
       `,
       choices: [' '],
     };
-    timeline.push(explanation2);
 
-    // --- 優越の錯覚の質問 ---
     const positive_items = [
-      "粘り強い",
-      "厳格",
-    ];
-
+    "寛大",         // tolerant
+    "親切",         // helpful
+    "視野が広い",   // discriminating / broad-minded
+    "知的",         // intelligent
+    "社交的",       // sociable
+    "果敢",         // determined
+    "勤勉",         // industrious
+    "正直",         // honest
+    "人に好かれる", // popular
+    "従順",         // submissive
+    "大胆",         // bold
+    "頼りになる",   // reliable
+    "実務家",       // practical
+    "誠実",         // sincere
+    "想像力に富む", // imaginative
+    "慎重",         // cautious
+    "控え目",       // modest
+    "器用",         // skillful
+    "陽気",         // happy
+    "冷静",         // calm/cool
+    "ユーモアがある", // humorous
+    "謙虚",         // modest
+    "思いやりがある", // good-natured / warm
+    "真面目",       // serious
+    "粘り強い",     // persistent
+    "厳格",         // serious / disciplined
+  ];
     const negative_items = [
-      "ユーモアがない",
-      "軽薄",
-    ];
-
-
+    "人望がない",   // unpopular
+    "無責任",       // irresponsible
+    "単純",         // simple-minded
+    "陰気",         // gloomy
+    "衝動的",       // impulsive
+    "知性がない",   // unintelligent
+    "不器用",       // clumsy
+    "不正直",       // dishonest
+    "浅薄",         // superficial
+    "頼りない",     // unreliable
+    "うぬぼれ屋",   // vain
+    "間抜け",       // foolish
+    "悲観的",       // pessimistic
+    "感傷的",       // sentimental
+    "内気",         // unsociable / shy
+    "支配的",       // dominating
+    "短気",         // irritable
+    "気難しい",     // moody / squeamish
+    "存在感が薄い", // insignificant
+    "優柔不断",     // wavering
+    "冴えない",     // boring / dull
+    "浪費家",       // wasteful
+    "想像力に欠ける", // unimaginative
+    "気まぐれ",     // moody
+    "ユーモアがない", // humorless
+    "軽薄",         // frivolous
+  ];
     const all_items = [
-      ...positive_items.map((txt, idx) => ({ text: txt, valence: "positive", })),
-      ...negative_items.map((txt, idx) => ({ text: txt, valence: "negative" })),
+      ...positive_items.map(txt => ({ text: txt, valence: "positive", })),
+      ...negative_items.map(txt => ({ text: txt, valence: "negative" })),
     ];
-    console.log(all_items);
     const superiority_items = jsPsych.randomization.shuffle(all_items);
 
-    const superiority_trials = superiority_items.map((item, i) => {
-      return {
+    const superiority_trials = superiority_items.map((item, i) => ({
         type: jsPsychHtmlSliderResponse,
         stimulus: `<p style="font-size:22px;">${item.text}</p>`,
         labels: ['下', '平均', '上'],
@@ -149,24 +162,30 @@
           question_text: item.text,
           valence: item.valence
         }
-      };
-    });
-    timeline.push(...superiority_trials);
+      }));
 
-    // --- 最終ページ（★ここでCSV保存ボタンを表示）
+    const superiority_experiment = {
+      timeline: [
+        explanation2,
+        ...superiority_trials,
+      ],};
+
+    const randomNum = Math.floor(Math.random() * 2)+1;
+    if (randomNum ===1){
+      timeline.push(loneliness_experiment);
+    } elseif (randomNum ===2){
+      timeline.push(superiority_experiment);
+    }
+
+    // --- 最終ページ
     const save_and_end = {
-      type: jsPsychHtmlButtonResponse,
+      type: jsPsychHtmlKeyboardResponse,
       stimulus: `
         <h2>実験は以上です。</h2>
         <p>ご協力ありがとうございました。</p>
-        <p>下のボタンを押すと、回答データ（CSV）がダウンロードされます。</p>
+        <p>spaceキーを押すと終了します</p>
       `,
-      choices: ['CSVを保存して終了'],
-      on_finish: () => {
-        // ★ ファイル名：FirstExperiment1-1_YYYYMMDD_hhmmss.csv
-        const fname = `FirstExperiment1-1_${timestamp()}.csv`;
-        downloadCSV(fname);
-      }
+      choices: [' '],
     };
     timeline.push(save_and_end);
 
