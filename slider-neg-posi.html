@@ -35,7 +35,7 @@
     const intro = {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: `
-        <h2>%%TITLE%%</h2>
+        <h2>評定実験</h2>
         <p>以下の質問に対して、あなたが感じている程度をスライダーでお答えください。</p>
         <p>スライダーを動かした後、「次へ」を押してください。</p>
         <p><br>スペースキーを押すと開始します。</p>
@@ -78,7 +78,7 @@
     const explanation2 = {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: `
-        <h2>%%TITLE%%</h2>
+        <h2>評定実験</h2>
         <p>以下の質問に対して、あなたが感じている程度を平均と比較してスライダーでお答えください。</p>
         <p>スライダーを動かした後、「次へ」を押してください。</p>
         <p><br>スペースキーを押すと開始します。</p>
@@ -172,21 +172,11 @@
 
     const randomNum = Math.floor(Math.random() * 2)+1;
     if (randomNum ===1){
-      intro.stimulus = intro.stimulus.replace('%%TITLE%%', '評定実験１');
-      explanation2.stimulus = explanation2.stimulus.replace('%%TITLE%%', '評定実験２');
-
       timeline.push(loneliness_experiment);
       timeline.push(superiority_experiment);
-
-      jsPsych.data.addProperties({block_order: 'loneliness_first'});
     } else if (randomNum ===2){
-      explanation2.stimulus = explanation2.stimulus.replace('%%TITLE%%', '評定実験１');
-      intro.stimulus = intro.stimulus.replace('%%TITLE%%', '評定実験２');
-
       timeline.push(superiority_experiment);
       timeline.push(loneliness_experiment);
-
-      jsPsych.data.addProperties({block_order: 'superiority_first'});
     }
 
     // --- 最終ページ
