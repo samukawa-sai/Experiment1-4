@@ -11,6 +11,8 @@
     <script src="https://unpkg.com/@jspsych/plugin-image-slider-response@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-preload@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
+    <!--likert-->
+    <script src="https://unpkg.com/@jspsych/plugin-survey-likert@2.1.0"></script>
     <!--fullscreen-->
     <script src="https://unpkg.com/@jspsych/plugin-fullscreen@2.1.0"></script>
 
@@ -88,7 +90,6 @@
       choices: [' '],
     };
 
-    // --- 孤独感の質問 ---
     let loneliness_items = [
       "自分には人との付き合いがないと感じることがありますか？",
       "自分は取り残されていると感じることがありますか？",
@@ -96,28 +97,36 @@
     ];
     loneliness_items = jsPsych.randomization.shuffle(loneliness_items);
 
-    const loneliness_trials = loneliness_items.map((elements, i) => {
+    const response_labels = [
+      "決してない",  
+      "あまりない",  
+      "ときどきある",
+      "常にある"     
+    ];
+
+    const loneliness_trials = loneliness_items.map((question, i) => {
       return {
-        type: jsPsychHtmlSliderResponse,
-        stimulus: `<p style="font-size:22px;">${elements}</p>`,
-        labels: ['まったく感じない', 'とても感じる'],
-        min: 0,
-        max: 100,
-        start: 50,
-        step: 1,
-        slider_width: 500,
-        require_movement: true,
-        button_label: '次へ',
-        data: { block: 'loneliness', question_number: i + 1, question_text: elements }
+        type: jsPsychSurveyLikert,
+        questions: [{
+          prompt: `<p style="font-size:22px;">${question}</p>`,
+          labels: response_labels,
+          required: true,
+          // horizontal: true ← 必要なら付ける
+        }],
+        data: {
+          block: 'loneliness',
+          question_number: i + 1,
+          question_text: question
+        }
       };
     });
 
-    const loneliness_experiment = {
-      timeline:[
-        explanation1,
-        ...loneliness_trials,
-      ]
-    }
+const loneliness_experiment = {
+  timeline: [
+    explanation1,
+    ...loneliness_trials
+  ]
+};
 
     // --- 説明文２ ---
     const explanation2 = {
