@@ -11,6 +11,9 @@
     <script src="https://unpkg.com/@jspsych/plugin-image-slider-response@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-preload@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
+    <!--fullscreen-->
+    <script src="https://unpkg.com/@jspsych/plugin-fullscreen@2.1.0"></script>
+
 
     <!-- CSS -->
     <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" >
@@ -23,9 +26,7 @@
   <body></body>
 
   <script>
-    // ==========================================
     // jsPsych 初期化
-    // ==========================================
     const jsPsych = initJsPsych();
     const timeline = [];
 
@@ -36,6 +37,13 @@
     };
     timeline.push(welcome)
 
+    const fullscreen = {
+      type: jsPsychFullscreen,
+      message: '<p>以下のボタンをクリックすると，全画面に切り替わります</p>',
+      button_label: "全画面表示に切り替え",
+      fullscreen_mode: true
+    };
+    timeline.push(fullscreen)
 
     const intro = {
       type: jsPsychHtmlButtonResponse,
