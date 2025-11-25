@@ -25,45 +25,52 @@
 
   <script>
     // ==========================================
-    // ユーティリティ（★CSV保存関数）
-    // ==========================================
-    function downloadCSV(filename) {
-      const csv = jsPsych.data.get().csv(); // 収集データをCSV化
-
-      const bom = new Uint8Array([0xEF, 0xBB, 0xBF]); // UTF-8のBOM
-      const blob = new Blob([bom, csv], { type: 'text/csv;charset=utf-8;' }); // BOMを先頭に追加
-
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    function timestamp() {
-      const d = new Date();
-      const pad = (n) => String(n).padStart(2, '0');
-      return (
-        d.getFullYear() +
-        pad(d.getMonth() + 1) +
-        pad(d.getDate()) + "_" +
-        pad(d.getHours()) +
-        pad(d.getMinutes()) +
-        pad(d.getSeconds())
-      );
-    }
-
-    // ==========================================
     // jsPsych 初期化
     // ==========================================
     const jsPsych = initJsPsych();
     const timeline = [];
 
-    // --- 説明文 ---
+    // 挨拶ページ
+    const welcome = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: "実験参加ありがとうございます。何かキーをおしてください。"
+    };
+    timeline.push(welcome)
+
+
     const intro = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus:
+        `
+          <div align='left'>
+          <p>この実験では，<strong>あなたの感じている孤独感や性格特性の印象について評価</strong>していただきます。</p>
+          <p>4段階の評価、そしてスライダーを用いて平均との比較を行う課題が含まれています。</p>
+          <p>下記にデータの取扱いと参加条件について説明します。</p>
+          <br>
+
+          <p><u>■ データについて</u></p>
+          <p>本実験で得られる回答データは<strong>すべて匿名化</strong>して扱います。</p>
+          <p>研究実施者が厳重に管理し，研究目的以外には使用しません。</p>
+          <p>結果が学会発表や論文等で利用される可能性がありますが，統計的に処理されるため，個人が特定されることはありません。</p>
+          <p>データをオンライン上で公開する可能性がありますが，匿名化処理を施しますので個人が特定されることはありません。</p>
+          <br>
+
+          <p><u>■ 参加の自由と中断について</u></p>
+          <p><strong>本実験へのご参加はあなたの自由意思に基づいて決定して下さい。</strong></p>
+          <p>参加後に中断したい場合は，そのままブラウザを閉じてください。これにより同意撤回とみなします。</p>
+          <p>中断された場合、その時点までのデータは研究で使用しません。</p>
+          <br>
+
+          <p>以上の内容を理解し，同意して実験に参加する場合は「次へ」を押してください。</p>
+          <p>参加しない場合はブラウザを閉じてください。</p>
+          </div>
+          `,
+      choices: ['次へ'],
+    };
+    timeline.push(intro);
+
+    // --- 説明文1 ---
+    const explanation1 = {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: `
         <h2>評定実験</h2>
@@ -100,7 +107,7 @@
 
     const loneliness_experiment = {
       timeline:[
-        intro,
+        explanation1,
         ...loneliness_trials,
       ]
     }
