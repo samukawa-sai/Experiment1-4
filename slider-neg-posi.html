@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>First Experiment1-1</title>
+
     <!-- jsPsych本体 -->
     <script src="https://unpkg.com/jspsych@8.2.2"></script>
 
@@ -11,18 +14,15 @@
     <script src="https://unpkg.com/@jspsych/plugin-image-slider-response@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-preload@2.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
-    <!--likert-->
     <script src="https://unpkg.com/@jspsych/plugin-survey-likert@2.1.0"></script>
-    <!--fullscreen-->
     <script src="https://unpkg.com/@jspsych/plugin-fullscreen@2.1.0"></script>
 
-
     <!-- CSS -->
-    <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" >
-
-    <!-- 文字コードなど -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css"
+      rel="stylesheet"
+      type="text/css"
+    />
   </head>
 
   <body></body>
@@ -37,21 +37,22 @@
       type: jsPsychHtmlKeyboardResponse,
       stimulus: "実験参加ありがとうございます。何かキーをおしてください。"
     };
-    timeline.push(welcome)
+    timeline.push(welcome);
 
+    // fullscreen
     const fullscreen = {
       type: jsPsychFullscreen,
-      message: '<p>以下のボタンをクリックすると，全画面に切り替わります</p>',
+      message: "<p>以下のボタンをクリックすると，全画面に切り替わります</p>",
       button_label: "全画面表示に切り替え",
       fullscreen_mode: true
     };
-    timeline.push(fullscreen)
+    timeline.push(fullscreen);
 
+    // 同意説明
     const intro = {
       type: jsPsychHtmlButtonResponse,
-      stimulus:
-        `
-          <div align='left'>
+      stimulus: `
+        <div align='left'>
           <p>この実験では，<strong>あなたの感じている孤独感や性格特性の印象について評価</strong>していただきます。</p>
           <p>4段階の評価、そしてスライダーを用いて平均との比較を行う課題が含まれています。</p>
           <p>下記にデータの取扱いと参加条件について説明します。</p>
@@ -72,9 +73,9 @@
 
           <p>以上の内容を理解し，同意して実験に参加する場合は「次へ」を押してください。</p>
           <p>参加しない場合はブラウザを閉じてください。</p>
-          </div>
-          `,
-      choices: ['次へ'],
+        </div>
+      `,
+      choices: ["次へ"]
     };
     timeline.push(intro);
 
@@ -83,13 +84,13 @@
       type: jsPsychHtmlKeyboardResponse,
       stimulus: `
         <h2>評定実験</h2>
-        <p>以下の質問に対して、あなたが感じている程度をスライダーでお答えください。</p>
-        <p>スライダーを動かした後、「次へ」を押してください。</p>
+        <p>以下の質問に対して、あなたが感じている程度を選択してお答えください。</p>
         <p><br>スペースキーを押すと開始します。</p>
       `,
-      choices: [' '],
+      choices: [" "]
     };
 
+    // 孤独感（UCLA短縮など）
     let loneliness_items = [
       "自分には人との付き合いがないと感じることがありますか？",
       "自分は取り残されていると感じることがありますか？",
@@ -97,143 +98,198 @@
     ];
     loneliness_items = jsPsych.randomization.shuffle(loneliness_items);
 
-    const response_labels = [
-      "決してない",  
-      "あまりない",  
-      "ときどきある",
-      "常にある"     
-    ];
+    const response_labels = ["決してない", "あまりない", "ときどきある", "常にある"];
 
     const loneliness_trials = loneliness_items.map((question, i) => {
       return {
         type: jsPsychSurveyLikert,
-        questions: [{
-          prompt: `<p style="font-size:22px;">${question}</p>`,
-          labels: response_labels,
-          required: true,
-          // horizontal: true ← 必要なら付ける
-        }],
+        questions: [
+          {
+            prompt: `<p style="font-size:22px;">${question}</p>`,
+            labels: response_labels,
+            required: true
+          }
+        ],
+        button_label: "次へ",
         data: {
-          block: 'loneliness',
+          block: "loneliness",
           question_number: i + 1,
           question_text: question
         }
       };
     });
 
-const loneliness_experiment = {
-  timeline: [
-    explanation1,
-    ...loneliness_trials
-  ]
-};
+    const loneliness_experiment = {
+      timeline: [explanation1, ...loneliness_trials]
+    };
 
-    // --- 説明文２ ---
+    // --- 説明文2 ---
     const explanation2 = {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: `
         <h2>評定実験</h2>
-        <p>以下の質問に対して、あなたが感じている程度を平均と比較してスライダーでお答えください。</p>
+        <p>以下の特性について、あなたが平均と比べてどの程度だと思うかをスライダーでお答えください。</p>
         <p>スライダーを動かした後、「次へ」を押してください。</p>
         <p><br>スペースキーを押すと開始します。</p>
       `,
-      choices: [' '],
+      choices: [" "]
     };
 
     const positive_items = [
-    "寛大",         // tolerant
-    "親切",         // helpful
-    "視野が広い",   // discriminating / broad-minded
-    "知的",         // intelligent
-    "社交的",       // sociable
-    "果敢",         // determined
-    "勤勉",         // industrious
-    "正直",         // honest
-    "人に好かれる", // popular
-    "従順",         // submissive
-    "大胆",         // bold
-    "頼りになる",   // reliable
-    "実務家",       // practical
-    "誠実",         // sincere
-    "想像力に富む", // imaginative
-    "慎重",         // cautious
-    "控え目",       // modest
-    "器用",         // skillful
-    "陽気",         // happy
-    "冷静",         // calm/cool
-    "ユーモアがある", // humorous
-    "謙虚",         // modest
-    "思いやりがある", // good-natured / warm
-    "真面目",       // serious
-    "粘り強い",     // persistent
-    "厳格",         // serious / disciplined
-  ];
+      "寛大",
+      "親切",
+      "視野が広い",
+      "知的",
+      "社交的",
+      "果敢",
+      "勤勉",
+      "正直",
+      "人に好かれる",
+      "従順",
+      "大胆",
+      "頼りになる",
+      "実務家",
+      "誠実",
+      "想像力に富む",
+      "慎重",
+      "控え目",
+      "器用",
+      "陽気",
+      "冷静",
+      "ユーモアがある",
+      "謙虚",
+      "思いやりがある",
+      "真面目",
+      "粘り強い",
+      "厳格"
+    ];
+
     const negative_items = [
-    "人望がない",   // unpopular
-    "無責任",       // irresponsible
-    "単純",         // simple-minded
-    "陰気",         // gloomy
-    "衝動的",       // impulsive
-    "知性がない",   // unintelligent
-    "不器用",       // clumsy
-    "不正直",       // dishonest
-    "浅薄",         // superficial
-    "頼りない",     // unreliable
-    "うぬぼれ屋",   // vain
-    "間抜け",       // foolish
-    "悲観的",       // pessimistic
-    "感傷的",       // sentimental
-    "内気",         // unsociable / shy
-    "支配的",       // dominating
-    "短気",         // irritable
-    "気難しい",     // moody / squeamish
-    "存在感が薄い", // insignificant
-    "優柔不断",     // wavering
-    "冴えない",     // boring / dull
-    "浪費家",       // wasteful
-    "想像力に欠ける", // unimaginative
-    "気まぐれ",     // moody
-    "ユーモアがない", // humorless
-    "軽薄",         // frivolous
-  ];
+      "人望がない",
+      "無責任",
+      "単純",
+      "陰気",
+      "衝動的",
+      "知性がない",
+      "不器用",
+      "不正直",
+      "浅薄",
+      "頼りない",
+      "うぬぼれ屋",
+      "間抜け",
+      "悲観的",
+      "感傷的",
+      "内気",
+      "支配的",
+      "短気",
+      "気難しい",
+      "存在感が薄い",
+      "優柔不断",
+      "冴えない",
+      "浪費家",
+      "想像力に欠ける",
+      "気まぐれ",
+      "ユーモアがない",
+      "軽薄"
+    ];
+
     const all_items = [
-      ...positive_items.map(txt => ({ text: txt, valence: "positive", })),
-      ...negative_items.map(txt => ({ text: txt, valence: "negative" })),
+      ...positive_items.map((txt) => ({ text: txt, valence: "positive" })),
+      ...negative_items.map((txt) => ({ text: txt, valence: "negative" }))
     ];
     const superiority_items = jsPsych.randomization.shuffle(all_items);
 
     const superiority_trials = superiority_items.map((item, i) => ({
-        type: jsPsychHtmlSliderResponse,
-        stimulus: `<p style="font-size:22px;">${item.text}</p>`,
-        labels: ['下', '平均', '上'],
-        min: 0, max: 100, start: 50, step: 1,
-        slider_width: 500,
-        require_movement: true,
-        button_label: '次へ',
-        data: {
-          question_number: i+1,
-          block: 'superiority',
-          question_text: item.text,
-          valence: item.valence
-        }
-      }));
+      type: jsPsychHtmlSliderResponse,
+      stimulus: `<p style="font-size:22px;">${item.text}</p>`,
+      labels: ["下", "平均", "上"],
+      min: 0,
+      max: 100,
+      start: 50,
+      step: 1,
+      slider_width: 500,
+      require_movement: true,
+      button_label: "次へ",
+      data: {
+        question_number: i + 1,
+        block: "superiority",
+        question_text: item.text,
+        valence: item.valence
+      }
+    }));
 
     const superiority_experiment = {
-      timeline: [
-        explanation2,
-        ...superiority_trials,
-      ],};
+      timeline: [explanation2, ...superiority_trials]
+    };
 
-    const randomNum = Math.floor(Math.random() * 2)+1;
-    if (randomNum ===1){
-      timeline.push(loneliness_experiment);
-      timeline.push(superiority_experiment);
-    } else if (randomNum ===2){
-      timeline.push(superiority_experiment);
-      timeline.push(loneliness_experiment);
+    // --- PHQ-9 ---
+    const phq_instruction_html = `
+      <div style="text-align:center; font-size:22px;">
+        <p>
+          <strong>この2週間、次のような問題にどのくらい頻繁（ひんぱん）に
+          悩まされていますか？</strong>
+        </p>
+      </div>
+    `;
+
+    const phq_labels = ["全くない", "数日", "半分以上", "ほとんど毎日"];
+
+    const phq_experiment_item = [
+      "物事に対してほとんど興味がない、または楽しめない",
+      "気分が落ち込む、憂うつになる、または絶望的な気持ちになる",
+      "寝付きが悪い、途中で目がさめる、または逆に眠り過ぎる",
+      "疲れた感じがする、または気力がない",
+      "あまり食欲がない、または食べ過ぎる",
+      "自分はダメな人間だ、人生の敗北者だと気に病む、または自分自身あるいは家族に申し訳がないと感じる",
+      "新聞を読む、またはテレビを見ることなどに集中することが難しい",
+      "他人が気づくぐらいに動きや話し方が遅くなる、あるいは反対に、そわそわしたり、落ちつかず、ふだんよりも動き回ることがある",
+      "死んだ方がましだ、あるいは自分を何らかの方法で傷つけようと思ったことがある"
+    ];
+
+    const phq_experiment_questions = jsPsych.randomization.shuffle(
+      phq_experiment_item
+    );
+
+    const phq_experiment_intro = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `
+        <h2>評定実験</h2>
+        <p>この2週間、以下の質問に対してどのくらい頻繁（ひんぱん）に悩まされているかお答えください。</p>
+        <p><br>スペースキーを押すと開始します。</p>
+      `,
+      choices: [" "]
+    };
+
+    const phq_trials = [
+  {
+    type: jsPsychSurveyLikert,
+    preamble: phq_instruction_html,
+    questions: phq_experiment_questions.map((question, i) => ({
+      prompt: `<p style="font-size:20px; padding: 0 5%;">${question}</p>`,
+      labels: phq_labels,
+      required: true,
+      name: `phq_q${i + 1}`
+    })),
+    button_label: "次へ",
+    data: {
+      block: "phq9"
     }
+  }
+];
 
-    // --- 最終ページ
+    const phq_experiment = {
+      timeline: [phq_experiment_intro, ...phq_trials]
+    };
+
+    // ====== 被験者ごとにシャッフル ======
+    const random_order = jsPsych.randomization.shuffle([
+      loneliness_experiment,
+      superiority_experiment,
+      phq_experiment
+    ]);
+    timeline.push(...random_order);
+
+    // --- 最終ページ ---
     const save_and_end = {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: `
@@ -241,7 +297,7 @@ const loneliness_experiment = {
         <p>ご協力ありがとうございました。</p>
         <p>spaceキーを押すと終了します</p>
       `,
-      choices: [' '],
+      choices: [" "]
     };
     timeline.push(save_and_end);
 
